@@ -1,4 +1,4 @@
-#!/home/azamat/Документы/Python/6_June_2021/17jun_Jango/DjnagoNews/venv/bin/python
+#!/home/baha/DjangoNews/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
