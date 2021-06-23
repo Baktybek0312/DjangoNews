@@ -20,7 +20,9 @@ from django.urls import path, include
 import debug_toolbar
 
 urlpatterns = [
+    path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('news.urls')),
 ]
 
