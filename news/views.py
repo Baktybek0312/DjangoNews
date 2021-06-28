@@ -2,49 +2,50 @@ from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from .models import News, Category
-from .forms import NewsForm
+from .forms import NewsForm, UserRegistrationForm, UserLoginForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)
             messages.success(request, 'Вы успешно зарегистировались')
-            return redirect('/admin/')
+            return redirect('home')
         else:
             messages.error(request, 'Ошибка регистрации')
     else:
-        form = UserCreationForm()
+        form = UserRegistrationForm()
     return render(request, 'news/register.html', {'form': form})
 
-def loginPage(request):
+def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
-            messages.success(request, "Вы успешно авторизовались")
             return redirect('home')
-        else:
-            messages.error(request, 'Ошибка входа')
-            return redirect('login')
+
     else:
-        form = AuthenticationForm()
+        form = UserLoginForm()
         return render(request, 'news/login.html', {'form': form})
 
-def test(request):
-    objects = ['baha', 'janarbek', 'amina', 'dilmurat', 'ajar', 'baystan', 'beka']
-    paginator = Paginator(objects, 3)
-    page_num = request.GET.get('page', 1)
-    page_objects = paginator.get_page(page_num)
-    return render(request, 'news/test.html', {'page_obj': page_objects})
+def user_logout(request):
+    logout(request)
+    return redirect('home')
+
+# def test(request):
+#     objects = ['baha', 'janarbek', 'amina', 'dilmurat', 'ajar', 'baystan', 'beka']
+#     paginator = Paginator(objects, 3)
+#     page_num = request.GET.get('page', 1)
+#     page_objects = paginator.get_page(page_num)
+#     return render(request, 'news/test.html', {'page_obj': page_objects})
 
 class HomeNews(MyMixin, ListView):
     model = News

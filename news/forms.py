@@ -3,10 +3,19 @@ from django.forms import ModelForm
 from .models import News, Category
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.contrib.auth.models import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 import re
 
+class UserLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        label='Имя пользователя',
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    password = forms.CharField(
+        label='Пароль',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
 
 class NewsForm(forms.ModelForm):
     class Meta:
@@ -24,8 +33,22 @@ class NewsForm(forms.ModelForm):
             raise ValidationError('Давай без цифр')
         return title
 
-class CreateUserForm(UserCreationForm):
+class UserRegistrationForm(UserCreationForm):
+    username = forms.CharField(label='Имя пользователя',
+                               help_text='Максимум до 150 символов',
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(label='Пароль',
+                                help_text='Введите пароль',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    password2 = forms.CharField(label='Потверждение',
+                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    email = forms.CharField(label='Электронная Почта',
+                                widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+
     class Meta:
         model = User
-        fields = '__all__'
-        widget = {}
+        fields = ('username', 'email', 'password1', 'password2')
+
