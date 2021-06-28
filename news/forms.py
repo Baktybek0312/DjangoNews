@@ -4,8 +4,15 @@ from .models import News, Category
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-
+from captcha.fields import CaptchaField
 import re
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(label='Тема',
+                              widget=forms.TextInput(attrs={'class': 'form-control'}))
+    content = forms.CharField(label='Текст',
+                              widget=forms.Textarea(attrs={'class': 'form-control'}))
+    captcha = CaptchaField()
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -16,6 +23,7 @@ class UserLoginForm(AuthenticationForm):
         label='Пароль',
         widget=forms.PasswordInput(attrs={'class': 'form-control'})
     )
+
 
 class NewsForm(forms.ModelForm):
     class Meta:
@@ -34,9 +42,11 @@ class NewsForm(forms.ModelForm):
         return title
 
 class UserRegistrationForm(UserCreationForm):
+
     username = forms.CharField(label='Имя пользователя',
                                help_text='Максимум до 150 символов',
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     password1 = forms.CharField(label='Пароль',
                                 help_text='Введите пароль',
                                 widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -46,7 +56,6 @@ class UserRegistrationForm(UserCreationForm):
 
     email = forms.CharField(label='Электронная Почта',
                                 widget=forms.EmailInput(attrs={'class': 'form-control'}))
-
 
     class Meta:
         model = User
