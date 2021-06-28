@@ -1,8 +1,12 @@
 from django import forms
-from django.forms import widgets
+from django.forms import ModelForm
 from .models import News, Category
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
+from django.contrib.auth.models import UserCreationForm
+
 import re
+
 
 class NewsForm(forms.ModelForm):
     class Meta:
@@ -20,3 +24,8 @@ class NewsForm(forms.ModelForm):
             raise ValidationError('Давай без цифр')
         return title
 
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = '__all__'
+        widget = {}

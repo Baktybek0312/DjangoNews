@@ -6,6 +6,38 @@ from .forms import NewsForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib import messages
+from django.contrib.auth import login, authenticate
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно зарегистировались')
+            return redirect('/admin/')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserCreationForm()
+    return render(request, 'news/register.html', {'form': form})
+
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Вы успешно авторизовались")
+            return redirect('home')
+        else:
+            messages.error(request, 'Ошибка входа')
+            return redirect('login')
+    else:
+        form = AuthenticationForm()
+        return render(request, 'news/login.html', {'form': form})
 
 def test(request):
     objects = ['baha', 'janarbek', 'amina', 'dilmurat', 'ajar', 'baystan', 'beka']
@@ -37,6 +69,7 @@ class HomeNews(MyMixin, ListView):
 #         'title': 'Список новостей',
 #     }
 #     return render(request, template_name='news/index.html', context=context)
+
 
 class NewsByCategory(ListView):
     model = News
