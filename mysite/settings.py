@@ -138,6 +138,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 INTERNAL_IPS = ['127.0.0.1']
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'bahatoktobekov7@gmail.com'
+EMAIL_HOST_PASSWORD = 'Baha0312'
+EMAIL_USE_TLS = True
+
+
 CKEDITOR_UPLOAD_PATH = "/uploads/"
 
 CKEDITOR_CONFIGS = {

@@ -45,7 +45,9 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'from@example.com', ['to@example.com'], fail_silently=True)
+            mail = send_mail(form.cleaned_data['subject'],
+                             form.cleaned_data['content'],
+                             'bahatoktobekov7@gmail.com', ['kulbarakovich@gmail.com'], fail_silently=True)
             if mail:
                 messages.success(request, 'Письмо отправлено!')
                 return redirect('contact')
@@ -56,6 +58,7 @@ def contact(request):
     else:
         form = ContactForm()
     return render(request, 'news/contact.html', {'form': form})
+
 # def test(request):
 #     objects = ['baha', 'janarbek', 'amina', 'dilmurat', 'ajar', 'baystan', 'beka']
 #     paginator = Paginator(objects, 3)
