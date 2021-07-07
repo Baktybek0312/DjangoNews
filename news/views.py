@@ -1,3 +1,4 @@
+from django.db.models import F
 from django import forms
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
@@ -47,7 +48,9 @@ def contact(request):
         if form.is_valid():
             mail = send_mail(form.cleaned_data['subject'],
                              form.cleaned_data['content'],
-                             'bahatoktobekov7@gmail.com', ['kulbarakovich@gmail.com'], fail_silently=True)
+                             'bahatoktobekov7@gmail.com',
+                             ['kulbarakovich@gmail.com', 'bektur1902@gmail.com'],
+                             fail_silently=True)
             if mail:
                 messages.success(request, 'Письмо отправлено!')
                 return redirect('contact')
@@ -115,6 +118,12 @@ class ViewNews(DetailView):
     # pk_url_kwarg = 'news_id'
     context_object_name = 'news_item'
 
+    def get_context_data(self, **kwargs):
+        context = super(ViewNews, self).get_context_data()
+        self.object.views = F('views') +1
+        self.object.save()
+        self.object.refresh_from_db()
+        return context
 # def view_news(request, news_id):
 #     # news_item = News.objects.get(pk=news_id)
 #     news_item = get_object_or_404(News, pk=news_id)
